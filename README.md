@@ -1,6 +1,6 @@
 # Trend Convexity
 ## Background
-This repository replicates the results within [_Tail protection for long investors: Trend convexity at work_](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2777657) by J.P. Bouchaud et. al. The repo analysis Trend Follower CTA strategies and their analogous relationship to long-convexity strategies such as long straddles. Historically this relationship is well known since buy straddles essentially buys volatility (both upside and downside). 
+This repository replicates the results within [_Tail protection for long investors: Trend convexity at work_](https://arxiv.org/abs/1607.02410) by J.P. Bouchaud et. al. The repo analysis Trend Follower CTA strategies and their analogous relationship to long-convexity strategies such as long straddles. Historically this relationship is well known since buy straddles essentially buys volatility (both upside and downside). 
 
 ## CTA Performance
 Historically Hedge Fund performance has slight negative convexity to SPX
