@@ -130,6 +130,6 @@ def main() -> None:
     data_collector.collect_spx()
     data_collector.collect_futures(verbose = True)
     DataCollector().collect_fx(verbose = True)
-        
-#if __name__ == "__main__": main()
+    
+if __name__ == "__main__": main()
     
