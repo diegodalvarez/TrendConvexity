@@ -24,14 +24,24 @@ class DataCollector():
         self.parent_path = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
         self.data_path = os.path.join(self.parent_path, "data")
         
+        self.guide_path = r"A:\BBGFuturesManager_backup_backup\root\fut_tickers.xlsx"
+        self.fut_path   = r"A:\2025Backup\BBGFuturesManager_backup\data\PXFront"
+        self.bbg_path   = r"C:\Users\Diego\Desktop\app_prod\BBGData\data"
+        
         self.tickers = {
             "Commodities": ["CL", "GC", "C", "HG", "S"],
             "Equities"   : ["ES", "VG", "Z", "NK"],
             "FX"         : ["EUR", "JPY", "GBP", "CHF"],
             "Bonds"      : ["TY", "RX", "G", "JB"]}
         
-        self.fut_path = r"C:\Users\Diego\Desktop\app_prod\BBGFuturesManager\data\PXFront"
-        self.bbg_path = r"C:\Users\Diego\Desktop\app_prod\BBGData\data"
+        #self.bad_contracts = ["FF"]
+        self.bad_contracts = []
+        
+        self.df_tickers = (pd.read_excel(
+            io = self.guide_path)
+            [["contract", "kind"]].
+            rename(columns = {"kind": "asset_class", "contract": "ticker"}).
+            query("ticker != @self.bad_contracts"))
         
     def _collect_data(self, start_date, end_date, tickers, path):
         
@@ -75,6 +85,8 @@ class DataCollector():
     def collect_futures(self, verbose: bool = False) -> pd.DataFrame:
         
         file_path = os.path.join(self.data_path, "FuturesData.parquet")
+        print(file_path)
+        
         try:
             
             if verbose == True: print("Trying to find the futures data")
@@ -85,6 +97,13 @@ class DataCollector():
             
             if verbose == True: print("Couldn't find data, now collecting it")
             
+            tickers = self.df_tickers.ticker.drop_duplicates().sort_values().to_list()
+            paths   = [os.path.join(self.fut_path, ticker + ".parquet") for ticker in tickers]
+            df_out  = pd.read_parquet(path = paths, engine = "pyarrow")
+            
+            '''
+            return-1
+            
             tickers = [
                 os.path.join(self.fut_path, item + ".parquet") 
                 for key, val in self.tickers.items() 
@@ -92,6 +111,7 @@ class DataCollector():
     
             df_out = (pd.read_parquet(
                 path = tickers, engine = "pyarrow"))
+            '''
             
             if verbose == True: print("Saving data\n")
             df_out.to_parquet(path = file_path, engine = "pyarrow")
@@ -99,6 +119,9 @@ class DataCollector():
         return df_out
     
     def collect_fx(self, verbose: bool = False) -> pd.DataFrame:
+        
+        if verbose: print("This function has been deprecated and FX is now within futures")
+        return-1
         
         file_path = os.path.join(self.data_path, "FXData.parquet")
         try:
@@ -126,10 +149,10 @@ class DataCollector():
 def main() -> None: 
     
     data_collector = DataCollector()
-    data_collector.collect_hf_indices()
-    data_collector.collect_spx()
     data_collector.collect_futures(verbose = True)
-    DataCollector().collect_fx(verbose = True)
+    #data_collector.collect_hf_indices()
+    #data_collector.collect_spx()
+    #DataCollector().collect_fx(verbose = True)
     
 if __name__ == "__main__": main()
     
